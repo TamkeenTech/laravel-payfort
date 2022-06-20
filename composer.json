@@ -1,0 +1,42 @@
+{
+    "name": "tamkeen-tech/laravel-payfort",
+    "description": "laravel Payfort package",
+    "keywords": [
+        "laravel payfort",
+        "payment",
+        "payfort"
+    ],
+    "authors": [
+        {
+            "name": "Sherif Ashraf",
+            "email": "sh.Ashraf@tamkeentech.sa"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TamkeenTech\\Payfort\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TamkeenTech\\Payfort\\Test\\": "tests/"
+        }
+    },
+    "license": "MIT",
+    "require": {
+        "php": ">=8"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TamkeenTech\\Payfort\\Providers\\PayfortServiceProvider"
+            ],
+            "aliases": {
+                "Payfort": "TamkeenTech\\Payfort\\Facades\\Payfort"
+            }
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.5"
+    }
+}
