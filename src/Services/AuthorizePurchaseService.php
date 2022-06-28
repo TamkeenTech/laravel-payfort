@@ -46,7 +46,7 @@ class AuthorizePurchaseService extends Payfort
             'merchant_reference' => $this->fort_params['merchant_reference'],
             'access_code' => $this->merchant['access_code'],
             'merchant_identifier' => $this->merchant['merchant_identifier'],
-            'customer_ip' => $_SERVER['REMOTE_ADDR'],
+            'customer_ip' => request()->ip(),
             'currency' => $this->currency,
             'customer_email' => $this->email,
             'token_name' => $this->fort_params['token_name'],
