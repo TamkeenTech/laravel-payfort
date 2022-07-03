@@ -13,6 +13,8 @@ Currently this package supports the below operation list:
 
 Please make sure to read and understand `payfort` documentation.
 
+Currently it supports only Laravel 9.
+
 ## Installation
 You need to run this command
 ```bash
@@ -201,5 +203,8 @@ $log->request = $event->request ? json_encode($event->request) : "";
 $log->response = json_encode($event->response);
 
 $log->save();
-
 ```
+
+## License
+
+The MIT License (MIT). Please see License File for more information.

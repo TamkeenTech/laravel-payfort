@@ -2,10 +2,18 @@
 
 namespace TamkeenTech\Payfort\Test;
 
+use Illuminate\Support\Facades\Http;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 class TestCase extends TestbenchTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Http::preventStrayRequests();
+    }
+
+
     /**
      * Override application aliases.
      *
