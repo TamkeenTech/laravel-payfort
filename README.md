@@ -1,5 +1,8 @@
 Laravel Payfort
 =======================
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/tamkeen-tech/laravel-payfort.svg?style=flat-square)](https://packagist.org/packages/tamkeen-tech/laravel-payfort)
+[![Total Downloads](https://img.shields.io/packagist/dt/tamkeen-tech/laravel-payfort.svg?style=flat-square)](https://packagist.org/packages/tamkeen-tech/laravel-payfort)
+
 Helps you integrate Payfort into your application. currently it supports `Custom merchant page integration` refer to this [link](https://paymentservices-reference.payfort.com/docs/api/build/index.html#custom-merchant-page-integration) to understand more, also this package support using multiple merchant accounts.
 
 Currently this package supports the below operation list:
@@ -22,7 +25,7 @@ composer require tamkeen-tech/laravel-payfort
 ```
 To publish the configurations please run this command
 ```bash
-php artisan vendor:publish --tag payforg-config
+php artisan vendor:publish --tag payfort-config
 ```
 This will generate a `config/payfort.php` with the default configurations
 

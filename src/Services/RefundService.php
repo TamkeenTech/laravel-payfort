@@ -22,6 +22,8 @@ class RefundService extends Payfort
             'order_description' => "REFUND",
         ];
 
+        $request = array_merge($request, $this->merchant_extras);
+        
         // calculating signature
         $request['signature'] = $this->calculateSignature($request);
 

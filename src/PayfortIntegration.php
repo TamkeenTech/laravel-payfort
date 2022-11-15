@@ -61,6 +61,7 @@ class PayfortIntegration
     {
         return app(RefundService::class)
             ->setMerchant($this->merchant)
+            ->setMerchantExtras($this->merchant_extras)
             ->setFortId($fort_id)
             ->setAmount($amount)
             ->handle();
@@ -70,6 +71,7 @@ class PayfortIntegration
     {
         return app(VoidService::class)
             ->setMerchant($this->merchant)
+            ->setMerchantExtras($this->merchant_extras)
             ->setFortId($fort_id)
             ->handle();
     }
@@ -146,6 +148,7 @@ class PayfortIntegration
     {
         return app(ProcessResponseService::class)
             ->setMerchant($this->merchant)
+            ->setMerchantExtras($this->merchant_extras)
             ->setFortParams($fort_params)
             ->handle();
     }
@@ -161,6 +164,7 @@ class PayfortIntegration
     {
         return app(CaptureService::class)
             ->setMerchant($this->merchant)
+            ->setMerchantExtras($this->merchant_extras)
             ->setFortId($fort_id)
             ->setAmount($amount)
             ->handle();

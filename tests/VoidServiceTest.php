@@ -25,7 +25,8 @@ class VoidServiceTest extends TestCase
         ]);
     }
 
-    public function test_service_trigger_log_event()
+    /** @test */
+    public function service_trigger_log_event()
     {
         Event::fake();
 
@@ -41,7 +42,8 @@ class VoidServiceTest extends TestCase
         Event::assertDispatched(PayfortMessageLog::class);
     }
 
-    public function test_void_service_send_required_params()
+    /** @test */
+    public function void_service_send_required_params()
     {
         $this->mock(VoidService::class, function ($mock) {
             $mock->makePartial()
@@ -65,7 +67,8 @@ class VoidServiceTest extends TestCase
         });
     }
 
-    public function test_refund_service_return_exception_if_not_success()
+    /** @test */
+    public function void_service_return_exception_if_not_success()
     {
         $this->expectException(PaymentFailed::class);
 
@@ -84,5 +87,35 @@ class VoidServiceTest extends TestCase
         });
 
         Payfort::void(123);
+    }
+
+    /** @test */
+    public function void_service_add_merchant_extras()
+    {
+        $fort_id = 123123;
+
+        $this->partialMock(VoidService::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods();
+
+            $mock->shouldReceive('validateSignature')->andReturnSelf();
+            $mock->shouldReceive('validateResponseCode')->andReturnSelf();
+            $mock->shouldReceive('calculateSignature')->andReturn("signature");
+
+            $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
+        });
+
+        Payfort::setMerchantExtra(500)->void($fort_id, 1000);
+
+        Http::assertSent(function (Request $request) use ($fort_id) {
+            return count(array_diff($request->data(), [
+                "command" => "VOID_AUTHORIZATION",
+                "access_code" => null,
+                "merchant_identifier" => null,
+                "language" => null,
+                "fort_id" => $fort_id,
+                "merchant_extra" => 500,
+                "signature" => "signature"
+            ])) === 0 && $request->url() === 'test_link' && $request->method() === 'POST';
+        });
     }
 }

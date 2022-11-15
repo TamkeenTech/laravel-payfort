@@ -23,7 +23,8 @@ class RefundServiceTest extends TestCase
         ]);
     }
 
-    public function test_refund_service_send_the_required_params()
+    /** @test */
+    public function refund_service_send_the_required_params()
     {
         $this->mock(RefundService::class, function ($mock) {
             $mock->makePartial()
@@ -49,7 +50,8 @@ class RefundServiceTest extends TestCase
             ])) === 0 && $request->url() === 'test_link' && $request->method() === 'POST';
         });
     }
-    public function test_refund_service_send_the_required_params_retry()
+    /** @test */
+    public function refund_service_send_the_required_params_retry()
     {
         $this->mock(RefundService::class, function ($mock) {
             $mock->makePartial()
@@ -75,7 +77,9 @@ class RefundServiceTest extends TestCase
             ])) === 0 && $request->url() === 'test_link' && $request->method() === 'POST';
         });
     }
-    public function test_refund_service_return_exception_if_not_success()
+
+    /** @test */
+    public function refund_service_return_exception_if_not_success()
     {
         $this->expectException(PaymentFailed::class);
 
@@ -94,5 +98,38 @@ class RefundServiceTest extends TestCase
         });
 
         Payfort::refund(123, 123, 100);
+    }
+
+    /** @test */
+    public function refund_service_add_merchant_extras()
+    {
+        $fort_id = 123123;
+
+        $this->partialMock(RefundService::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods();
+
+            $mock->shouldReceive('validateSignature')->andReturnSelf();
+            $mock->shouldReceive('validateResponseCode')->andReturnSelf();
+            $mock->shouldReceive('calculateSignature')->andReturn("signature");
+
+            $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
+        });
+
+        Payfort::setMerchantExtra(500)->refund($fort_id, 1000);
+
+        Http::assertSent(function (Request $request) use ($fort_id) {
+            return count(array_diff($request->data(), [
+                "command" => "REFUND",
+                "access_code" => null,
+                "merchant_identifier" => null,
+                "language" => 'en',
+                "fort_id" => $fort_id,
+                "currency" => "SAR",
+                "amount" => 100000.0,
+                "merchant_extra" => 500,
+                "order_description" => "REFUND",
+                "signature" => "signature",
+            ])) === 0 && $request->url() === 'test_link' && $request->method() === 'POST';
+        });
     }
 }
