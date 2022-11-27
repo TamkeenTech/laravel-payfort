@@ -5,6 +5,7 @@ namespace TamkeenTech\Payfort\Repositories;
 use Illuminate\Support\Facades\Http;
 use TamkeenTech\Payfort\Events\PayfortMessageLog;
 use TamkeenTech\Payfort\Exceptions\PaymentFailed;
+use Illuminate\Support\Str;
 
 abstract class Payfort
 {
@@ -52,7 +53,7 @@ abstract class Payfort
 
     protected function generateMerchantReference()
     {
-        return uuid_create(4);
+        return Str::uuid();
     }
 
     protected function getGatewayUrl(): string
