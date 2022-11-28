@@ -51,7 +51,7 @@ abstract class Payfort
             'https://paymentservices.payfort.com/FortAPI/paymentApi';
     }
 
-    protected function generateMerchantReference()
+    protected function generateMerchantReference(): string
     {
         return Str::uuid();
     }
