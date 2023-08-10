@@ -59,6 +59,9 @@ class AuthorizePurchaseService extends Payfort
             $request = array_merge($request, $this->insallments_params);
         }
 
+        if (count($this->apple_pay)) {
+            $request = array_merge($request,$this->apple_pay);}
+
         $request = array_merge($request, $this->merchant_extras);
 
         if (isset($this->fort_params['3ds']) && $this->fort_params['3ds'] == 'no') {

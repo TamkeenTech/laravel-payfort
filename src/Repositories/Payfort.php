@@ -30,6 +30,9 @@ abstract class Payfort
 
     protected $redirect_url = "";
 
+    protected $apple_pay = [];
+
+
     /**
      * @var string order currency
      */
@@ -83,7 +86,16 @@ abstract class Payfort
         $shaString = '';
         ksort($data);
         foreach ($data as $k => $v) {
-            $shaString .= "$k=$v";
+            if (is_array($v)) {
+                $shaString .= "$k={";
+                foreach ($v as $k2 => $v2) {
+                    $shaString .= "$k2=$v2, ";
+                }
+                $shaString = rtrim($shaString, ', ');
+                $shaString .= '}';
+            } else {
+                $shaString .= "$k=$v";
+            }
         }
 
         if ($signType == 'request') {
@@ -202,6 +214,30 @@ abstract class Payfort
         if (app()->environment('staging') && isset($fort_ids[$fort_id])) {
             throw new PaymentFailed($fort_ids[$fort_id]);
         }
+    }
+
+    public function setApplePayParams(array $params = []): self
+    {
+        if (count($params)) {
+                $data=[ 'apple_data' => $params['data']['apple_data']];
+                
+                $header =[
+                'apple_ephemeralPublicKey' => $params['header']['apple_ephemeralPublicKey'],
+                'apple_publicKeyHash' => $params['header']['apple_publicKeyHash'],
+                'apple_transactionId' =>$params['header']['apple_transactionId'],];
+                
+                $payment_method =[
+                'apple_displayName' => $params['payment_method']['apple_displayName'],
+                'apple_network' => $params['payment_method']['apple_network'],
+                'apple_type' => $params['payment_method']['apple_type']];
+
+       $this->apple_pay['data'] = $data;
+        $this->apple_pay['header'] = $header;
+        $this->apple_pay['payment_method'] = $payment_method;
+
+                }
+                
+        return $this;
     }
 
     abstract public function handle();
