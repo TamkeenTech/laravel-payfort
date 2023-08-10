@@ -17,6 +17,8 @@ class PayfortIntegration
 
     protected $merchant_extras = [];
 
+    protected $apple_pay = [];
+
     public function __construct()
     {
         $this->merchant = config('payfort.merchants.default');
@@ -35,8 +37,8 @@ class PayfortIntegration
     public function setMerchantExtra($extra1, $extra2 = '', $extra3 = '', $extra4 = '', $extra5 = ''): self
     {
         for ($i = 1; $i <= 5; $i++) {
-            if (! empty(${'extra'.$i}) && ! is_array(${'extra'.$i})) {
-                array_push($this->merchant_extras, ${'extra'.$i});
+            if (!empty(${'extra' . $i}) && !is_array(${'extra' . $i})) {
+                array_push($this->merchant_extras, ${'extra' . $i});
             }
         }
 
@@ -56,6 +58,30 @@ class PayfortIntegration
 
         return $this;
     }
+
+
+    public function setApplePayParams(mixed $data, array $header, array $payment_method, mixed $signature): self
+    {
+        $this->apple_pay = [
+            'apple_data'               => $data,
+            'apple_header'             => [
+                'apple_ephemeralPublicKey' => data_get($header, 'ephemeralPublicKey'),
+                'apple_publicKeyHash'      => data_get($header, 'publicKeyHash'),
+                'apple_transactionId'      => data_get($header, 'transactionId'),
+            ],
+            'apple_paymentMethod' => [
+                'apple_displayName' => data_get($payment_method, 'displayName'),
+                'apple_network'     => data_get($payment_method, 'network'),
+                'apple_type'        => data_get($payment_method, 'type'),
+            ],
+            'apple_signature'           => $signature,
+            'digital_wallet'            => 'APPLE_PAY',
+        ];
+
+        return $this;
+    }
+
+
 
     public function refund($fort_id, $amount)
     {
@@ -89,17 +115,19 @@ class PayfortIntegration
         float $amount,
         string $email,
         string $redirect_url,
-        array $installments_params = []
+        array $installments_params = [],
+
     ) {
         /** @var \TamkeenTech\Payfort\Services\AuthorizePurchaseService */
         return app(AuthorizePurchaseService::class)
             ->setMerchant($this->merchant)
+            ->setApplePayParams($this->apple_pay)
             ->setFortParams($fort_params)
-            ->setInstallmentParams($installments_params)
             ->setAmount($amount)
             ->setMerchantExtras($this->merchant_extras)
             ->setEmail($email)
             ->setRedirectUrl($redirect_url)
+            ->setInstallmentParams($installments_params)
             ->handle();
     }
 
@@ -113,6 +141,7 @@ class PayfortIntegration
         return app(AuthorizePurchaseService::class)
             ->setAuthorizationCommand()
             ->setMerchant($this->merchant)
+            ->setApplePayParams($this->apple_pay)
             ->setFortParams($fort_params)
             ->setMerchantExtras($this->merchant_extras)
             ->setAmount($amount)

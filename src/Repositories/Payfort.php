@@ -30,6 +30,9 @@ abstract class Payfort
 
     protected $redirect_url = "";
 
+    protected $apple_pay = [];
+
+
     /**
      * @var string order currency
      */
@@ -83,13 +86,22 @@ abstract class Payfort
         $shaString = '';
         ksort($data);
         foreach ($data as $k => $v) {
-            $shaString .= "$k=$v";
+            if (is_array($v)) {
+                $shaString .= "$k={";
+                foreach ($v as $k2 => $v2) {
+                    $shaString .= "$k2=$v2, ";
+                }
+                $shaString = rtrim($shaString, ', ');
+                $shaString .= '}';
+            } else {
+                $shaString .= "$k=$v";
+            }
         }
 
         if ($signType == 'request') {
-            $shaString = $this->merchant['SHA_request_phrase'].$shaString.$this->merchant['SHA_request_phrase'];
+            $shaString = $this->merchant['SHA_request_phrase'] . $shaString . $this->merchant['SHA_request_phrase'];
         } else {
-            $shaString = $this->merchant['SHA_response_phrase'].$shaString.$this->merchant['SHA_response_phrase'];
+            $shaString = $this->merchant['SHA_response_phrase'] . $shaString . $this->merchant['SHA_response_phrase'];
         }
 
         return hash($this->SHA_type, $shaString);
@@ -202,6 +214,13 @@ abstract class Payfort
         if (app()->environment('staging') && isset($fort_ids[$fort_id])) {
             throw new PaymentFailed($fort_ids[$fort_id]);
         }
+    }
+
+    public function setApplePayParams(array $apple_data): self
+    {
+        $this->apple_pay = $apple_data;
+
+        return $this;
     }
 
     abstract public function handle();
