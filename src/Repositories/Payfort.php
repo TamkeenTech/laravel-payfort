@@ -99,9 +99,9 @@ abstract class Payfort
         }
 
         if ($signType == 'request') {
-            $shaString = $this->merchant['SHA_request_phrase'].$shaString.$this->merchant['SHA_request_phrase'];
+            $shaString = $this->merchant['SHA_request_phrase'] . $shaString . $this->merchant['SHA_request_phrase'];
         } else {
-            $shaString = $this->merchant['SHA_response_phrase'].$shaString.$this->merchant['SHA_response_phrase'];
+            $shaString = $this->merchant['SHA_response_phrase'] . $shaString . $this->merchant['SHA_response_phrase'];
         }
 
         return hash($this->SHA_type, $shaString);
@@ -216,27 +216,10 @@ abstract class Payfort
         }
     }
 
-    public function setApplePayParams(array $params = []): self
+    public function setApplePayParams(array $apple_data): self
     {
-        if (count($params)) {
-                $data=[ 'apple_data' => $params['data']['apple_data']];
-                
-                $header =[
-                'apple_ephemeralPublicKey' => $params['header']['apple_ephemeralPublicKey'],
-                'apple_publicKeyHash' => $params['header']['apple_publicKeyHash'],
-                'apple_transactionId' =>$params['header']['apple_transactionId'],];
-                
-                $payment_method =[
-                'apple_displayName' => $params['payment_method']['apple_displayName'],
-                'apple_network' => $params['payment_method']['apple_network'],
-                'apple_type' => $params['payment_method']['apple_type']];
+        $this->apple_pay = $apple_data;
 
-       $this->apple_pay['data'] = $data;
-        $this->apple_pay['header'] = $header;
-        $this->apple_pay['payment_method'] = $payment_method;
-
-                }
-                
         return $this;
     }
 

@@ -60,7 +60,8 @@ class AuthorizePurchaseService extends Payfort
         }
 
         if (count($this->apple_pay)) {
-            $request = array_merge($request,$this->apple_pay);}
+            $request = array_merge($request, $this->apple_pay);
+        }
 
         $request = array_merge($request, $this->merchant_extras);
 

@@ -427,7 +427,7 @@ class AuthorizePurchaseServiceTest extends TestCase
     /** @test */
     public function purchase_service_send_the_required_params_with_apple()
     {
-     $this->mock(AuthorizePurchaseService::class, function ($mock) {
+        $this->mock(AuthorizePurchaseService::class, function ($mock) {
             $mock->makePartial()
                 ->shouldAllowMockingProtectedMethods();
 
@@ -437,26 +437,26 @@ class AuthorizePurchaseServiceTest extends TestCase
             $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
         });
 
-
-
-       $payfort= Payfort::setApplePayParams([
-        'data'=>[
-            "apple_data"=> "apple_data"],
-            'header'=>[
-            'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
-            'apple_publicKeyHash' => 'apple_publicKeyHash',
-            'apple_transactionId' => 'apple_transactionId'],
-            'payment_method'=>[
-            'apple_displayName' => 'apple_displayName',
-            'apple_network' => 'apple_network',
-            'apple_type' => 'apple_type']])
-       ->purchase([
-            "merchant_reference" => "merchant_reference",
-            "response_message" => "test",
-            "token_name" => "token_name",
-            "signature" => "signature",
-      
-        ], 1000, "test@test.com", "redirect_uri",);
+        Payfort::setApplePayParams(
+            "apple_data",
+            [
+                'ephemeralPublicKey' => 'apple_ephemeralPublicKey',
+                'publicKeyHash' => 'apple_publicKeyHash',
+                'transactionId' => 'apple_transactionId'
+            ],
+            [
+                'displayName' => 'apple_displayName',
+                'network' => 'apple_network',
+                'type' => 'apple_type'
+            ],
+            'test'
+        )
+            ->purchase([
+                "merchant_reference" => "merchant_reference",
+                "response_message" => "test",
+                "token_name" => "token_name",
+                "signature" => "signature",
+            ], 1000, "test@test.com", "redirect_uri");
 
 
         Http::assertSent(function (Request $request) {
@@ -473,79 +473,88 @@ class AuthorizePurchaseServiceTest extends TestCase
                 "return_url" => "redirect_uri",
                 "amount" => 100000.0,
                 "apple_data" => "apple_data",
-                'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
-                'apple_publicKeyHash' => 'apple_publicKeyHash',
-                'apple_transactionId' => 'apple_transactionId',
-                'apple_displayName' => 'apple_displayName',
-                'apple_network' => 'apple_network',
-                'apple_type' => 'apple_type',
+                "apple_header" => [
+                    'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
+                    'apple_publicKeyHash' => 'apple_publicKeyHash',
+                    'apple_transactionId' => 'apple_transactionId',
+                ],
+                "apple_paymentMethod" => [
+                    'apple_displayName' => 'apple_displayName',
+                    'apple_network' => 'apple_network',
+                    'apple_type' => 'apple_type',
+                ],
                 "signature" => "signature",
             ];
-      
+
             return $request->url() === 'test_link' && $request->method() === 'POST';
         });
     }
 
- /** @test */
- public function authorize_service_send_the_required_params_with_apple()
- {
-  $this->mock(AuthorizePurchaseService::class, function ($mock) {
-         $mock->makePartial()
-             ->shouldAllowMockingProtectedMethods();
+    /** @test */
+    public function authorize_service_send_the_required_params_with_apple()
+    {
+        $this->mock(AuthorizePurchaseService::class, function ($mock) {
+            $mock->makePartial()
+                ->shouldAllowMockingProtectedMethods();
 
-         $mock->shouldReceive('validateSignature')->andReturnSelf();
-         $mock->shouldReceive('validateResponseCode')->andReturnSelf();
-         $mock->shouldReceive('calculateSignature')->andReturn("signature");
-         $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
-     });
-
-
-
-    $payfort= Payfort::setApplePayParams([
-     'data'=>[
-         "apple_data"=> "apple_data"],
-         'header'=>[
-         'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
-         'apple_publicKeyHash' => 'apple_publicKeyHash',
-         'apple_transactionId' => 'apple_transactionId'],
-         'payment_method'=>[
-         'apple_displayName' => 'apple_displayName',
-         'apple_network' => 'apple_network',
-         'apple_type' => 'apple_type']])
-    ->authorize([
-         "merchant_reference" => "merchant_reference",
-         "response_message" => "test",
-         "token_name" => "token_name",
-         "signature" => "signature",
-   
-     ], 1000, "test@test.com", "redirect_uri",);
+            $mock->shouldReceive('validateSignature')->andReturnSelf();
+            $mock->shouldReceive('validateResponseCode')->andReturnSelf();
+            $mock->shouldReceive('calculateSignature')->andReturn("signature");
+            $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
+        });
 
 
-     Http::assertSent(function (Request $request) {
-         [
-             "command" => "PURCHASE",
-             "merchant_reference" => "merchant_reference",
-             "access_code" => null,
-             "merchant_identifier" => null,
-             "customer_ip" => "127.0.0.1",
-             "currency" => "SAR",
-             "customer_email" => "test@test.com",
-             "token_name" => "token_name",
-             "language" => null,
-             "return_url" => "redirect_uri",
-             "amount" => 100000.0,
-             "apple_data" => "apple_data",
-             'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
-             'apple_publicKeyHash' => 'apple_publicKeyHash',
-             'apple_transactionId' => 'apple_transactionId',
-             'apple_displayName' => 'apple_displayName',
-             'apple_network' => 'apple_network',
-             'apple_type' => 'apple_type',
-             "signature" => "signature",
-         ];
-   
-         return $request->url() === 'test_link' && $request->method() === 'POST';
-     });
- }  
-   
+
+        Payfort::setApplePayParams(
+            "apple_data",
+            [
+                'ephemeralPublicKey' => 'apple_ephemeralPublicKey',
+                'publicKeyHash' => 'apple_publicKeyHash',
+                'transactionId' => 'apple_transactionId'
+            ],
+            [
+                'displayName' => 'apple_displayName',
+                'network' => 'apple_network',
+                'type' => 'apple_type'
+            ],
+            'test'
+        )
+            ->purchase([
+                "merchant_reference" => "merchant_reference",
+                "response_message" => "test",
+                "token_name" => "token_name",
+                "signature" => "signature",
+            ], 1000, "test@test.com", "redirect_uri");
+
+
+        Http::assertSent(function (Request $request) {
+            [
+                "command" => "PURCHASE",
+                "merchant_reference" => "merchant_reference",
+                "access_code" => null,
+                "merchant_identifier" => null,
+                "customer_ip" => "127.0.0.1",
+                "currency" => "SAR",
+                "customer_email" => "test@test.com",
+                "token_name" => "token_name",
+                "language" => null,
+                "return_url" => "redirect_uri",
+                "amount" => 100000.0,
+                "apple_data" => "apple_data",
+                "apple_header" => [
+                    'apple_ephemeralPublicKey' => 'apple_ephemeralPublicKey',
+                    'apple_publicKeyHash' => 'apple_publicKeyHash',
+                    'apple_transactionId' => 'apple_transactionId',
+                ],
+                "apple_paymentMethod" => [
+                    'apple_displayName' => 'apple_displayName',
+                    'apple_network' => 'apple_network',
+                    'apple_type' => 'apple_type',
+                ],
+                "signature" => "signature",
+            ];
+
+            return $request->url() === 'test_link' && $request->method() === 'POST';
+        });
+    }
 }

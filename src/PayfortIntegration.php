@@ -37,8 +37,8 @@ class PayfortIntegration
     public function setMerchantExtra($extra1, $extra2 = '', $extra3 = '', $extra4 = '', $extra5 = ''): self
     {
         for ($i = 1; $i <= 5; $i++) {
-            if (! empty(${'extra'.$i}) && ! is_array(${'extra'.$i})) {
-                array_push($this->merchant_extras, ${'extra'.$i});
+            if (!empty(${'extra' . $i}) && !is_array(${'extra' . $i})) {
+                array_push($this->merchant_extras, ${'extra' . $i});
             }
         }
 
@@ -60,26 +60,23 @@ class PayfortIntegration
     }
 
 
-    public function setApplePayParams(array $params = []): self
+    public function setApplePayParams(mixed $data, array $header, array $payment_method, mixed $signature): self
     {
-        if (count($params)) {
-            $data = ['apple_data' => $params['data']['apple_data']];
-
-            $header = [
-                'apple_ephemeralPublicKey' => $params['header']['apple_ephemeralPublicKey'],
-                'apple_publicKeyHash' => $params['header']['apple_publicKeyHash'],
-                'apple_transactionId' => $params['header']['apple_transactionId'],
-            ];
-
-            $payment_method = [
-                'apple_displayName' => $params['payment_method']['apple_displayName'],
-                'apple_network' => $params['payment_method']['apple_network'],
-                'apple_type' => $params['payment_method']['apple_type']
-            ];
-            $this->apple_pay['data'] = $data;
-            $this->apple_pay['header'] = $header;
-            $this->apple_pay['payment_method'] = $payment_method;
-        }
+        $this->apple_pay = [
+            'apple_data'               => $data,
+            'apple_header'             => [
+                'apple_ephemeralPublicKey' => data_get($header, 'ephemeralPublicKey'),
+                'apple_publicKeyHash'      => data_get($header, 'publicKeyHash'),
+                'apple_transactionId'      => data_get($header, 'transactionId'),
+            ],
+            'apple_paymentMethod' => [
+                'apple_displayName' => data_get($payment_method, 'displayName'),
+                'apple_network'     => data_get($payment_method, 'network'),
+                'apple_type'        => data_get($payment_method, 'type'),
+            ],
+            'apple_signature'           => $signature,
+            'digital_wallet'            => 'APPLE_PAY',
+        ];
 
         return $this;
     }
