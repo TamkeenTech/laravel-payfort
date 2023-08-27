@@ -13,6 +13,7 @@ Currently this package supports the below operation list:
 - INSTALLMENTS
 - VOID
 - CHECK_STATUS
+- APPLE_PAY
 
 Please make sure to read and understand `payfort` documentation.
 
@@ -166,6 +167,36 @@ Payfort::setMerchantExtra('test')->tokenization(
 
 you can use this method `setMerchantExtra` before any command you want, and you have max 5 extras to add.
 
+
+### Apple pay
+To use apple pay services all you need to do is to do the following
+```php
+Payfort::applePay(
+    [], # fort params (please make sure to match the fort params mentioned below)
+    1000, # bill amount
+    'test@test.ts', # User email
+    'PURCHASE', # command to be sent to apple pay either PURCHASE or AUTHORIZE
+);
+```
+One important note, that you need to match the following fort params struture
+```php
+[
+    "paymentData" => [
+        "data" => "apple_data",
+        "header" => [
+            'ephemeralPublicKey' => 'apple_ephemeralPublicKey',
+            'publicKeyHash' => 'apple_publicKeyHash',
+            'transactionId' => 'apple_transactionId',
+        ],
+        "signature" => "signature",
+    ],
+    "paymentMethod" => [
+        'displayName' => 'apple_displayName',
+        'network' => 'apple_network',
+        'type' => 'apple_type',
+    ],
+]
+```
 
 ## Logging
 To log your requests with payfort you can listen to this event `\TamkeenTech\Payfort\Events\PayfortMessageLog` it will contain the data sent and the resposne

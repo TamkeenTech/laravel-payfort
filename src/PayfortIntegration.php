@@ -2,6 +2,7 @@
 
 namespace TamkeenTech\Payfort;
 
+use TamkeenTech\Payfort\Services\ApplePayService;
 use TamkeenTech\Payfort\Services\AuthorizePurchaseService;
 use TamkeenTech\Payfort\Services\CaptureService;
 use TamkeenTech\Payfort\Services\CheckStatusService;
@@ -196,6 +197,18 @@ class PayfortIntegration
             ->setMerchantExtras($this->merchant_extras)
             ->setFortId($fort_id)
             ->setAmount($amount)
+            ->handle();
+    }
+
+    public function applePay(array $params, float $amount, string $email, string $command = 'PURCHASE')
+    {
+        return app(ApplePayService::class)
+            ->setMerchant($this->merchant)
+            ->setCommand($command)
+            ->setFortParams($params)
+            ->setAmount($amount)
+            ->setMerchantExtras($this->merchant_extras)
+            ->setEmail($email)
             ->handle();
     }
 }

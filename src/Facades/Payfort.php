@@ -17,6 +17,7 @@ use TamkeenTech\Payfort\Services\VoidService;
  * @method static TokenizationService tokenization(float $amount, string $redirect_url, bool $form_flag = true)
  * @method static ProcessResponseService processResponse(array $fort_params)
  * @method static CaptureService capture(string $fort_id, $amount)
+ * @method static ApplePayService applePay(array $params, float $amount, string $email, string $command = 'PURCHASE')
  * @method static VoidService void($fort_id)
  * phpcs:enable
  *
