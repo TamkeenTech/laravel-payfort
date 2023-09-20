@@ -14,10 +14,14 @@ trait ResponseHelpers
         if (substr($this->fort_params['response_code'], 2) != '000') {
             extract($this->fort_params);
 
-            $code = $this->fort_params['acquirer_response_code'] ?? $this->fort_params['response_code'];
-            $message = "{$this->fort_params['response_code']} - {$this->fort_params['response_message']}";
+            $code = $acquirer_response_code ?? $response_code;
+            $message = "{$code} - {$response_message}";
 
-            throw new PaymentFailed($message, (string) $code);
+            throw new PaymentFailed(
+                message: $message,
+                acquirer: $acquirer_response_code ?? '',
+                responseCode: $response_code ?? ''
+            );
         }
 
         return $this;

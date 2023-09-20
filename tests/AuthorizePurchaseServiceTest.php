@@ -174,7 +174,7 @@ class AuthorizePurchaseServiceTest extends TestCase
     public function throw_error_if_no_success_response_code_from_tokenization()
     {
         $this->expectException(PaymentFailed::class);
-        $this->expectExceptionMessage("error_message");
+        $this->expectExceptionMessage("1111 - error_message");
 
         $this->mock(AuthorizePurchaseService::class, function ($mock) {
             $mock->makePartial()
@@ -188,7 +188,31 @@ class AuthorizePurchaseServiceTest extends TestCase
             "response_message" => "test",
             "token_name" => "token_name",
             "signature" => "signature",
-            "response_code" => "111111",
+            "response_code" => "1111",
+            "response_message" => "error_message"
+        ], 1000, "test@test.com", "redirect_uri");
+    }
+
+    /** @test */
+    public function throw_error_if_no_success_response_code_from_tokenization_with_acquirer_response_code()
+    {
+        $this->expectException(PaymentFailed::class);
+        $this->expectExceptionMessage("1233 - error_message");
+
+        $this->mock(AuthorizePurchaseService::class, function ($mock) {
+            $mock->makePartial()
+                ->shouldAllowMockingProtectedMethods();
+
+            $mock->shouldReceive('validateSignature')->andReturnSelf();
+        });
+
+        Payfort::purchase([
+            "merchant_reference" => "merchant_reference",
+            "response_message" => "test",
+            "token_name" => "token_name",
+            "signature" => "signature",
+            "response_code" => "222e",
+            "acquirer_response_code" => '1233',
             "response_message" => "error_message"
         ], 1000, "test@test.com", "redirect_uri");
     }
