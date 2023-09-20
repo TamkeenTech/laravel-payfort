@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class PaymentFailed extends Exception
 {
-    public function __construct(string $message = null, int $code = null, private readonly string $acquirer = '', private readonly string $responseCode = '')
+    public function __construct(string $message = null, int $code = null, private readonly ?string $acquirer = '', private readonly ?string $responseCode = '')
     {
         parent::__construct($message, $code);
     }
@@ -29,12 +29,12 @@ class PaymentFailed extends Exception
         ];
     }
 
-    public function getAcquirer(): string
+    public function getAcquirer(): string|null
     {
         return $this->acquirer;
     }
 
-    public function getResponseCode(): string
+    public function getResponseCode(): string|null
     {
         return $this->responseCode;
     }
