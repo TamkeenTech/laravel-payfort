@@ -11,7 +11,6 @@ abstract class Payfort
 {
     protected $merchant;
 
-
     protected $fort_id;
 
     protected $language;
@@ -24,6 +23,8 @@ abstract class Payfort
 
     protected $response;
 
+    public $currency;
+
     protected $merchant_extras = [];
 
     protected $email = "";
@@ -32,12 +33,6 @@ abstract class Payfort
 
     protected $apple_pay = [];
 
-
-    /**
-     * @var string order currency
-     */
-    public $currency = 'SAR';
-
     public $amount;
 
     public function __construct()
@@ -45,6 +40,7 @@ abstract class Payfort
         $this->language = config('payfort.language');
         $this->sandbox_mode = config('payfort.sandbox_mode');
         $this->SHA_type = config('payfort.SHA_type');
+        $this->currency = config('payfort.currency');
     }
 
     protected function getOperationUrl(): string
@@ -138,7 +134,7 @@ abstract class Payfort
      */
     public function convertFortAmount($amount)
     {
-        $decimalPoints = $this->getCurrencyDecimalPoints($this->currency);
+        $decimalPoints = $this->getCurrencyDecimalPoints();
 
         return round($amount * (pow(10, $decimalPoints)), $decimalPoints);
     }
@@ -225,13 +221,11 @@ abstract class Payfort
 
     abstract public function handle();
 
-    /**
-     * @param  string  $currency
-     * @param  int
-     */
-    private function getCurrencyDecimalPoints($currency)
+    private function getCurrencyDecimalPoints()
     {
         $decimalPoint = 2;
+
+        $currency = $this->currency;
 
         $arrCurrencies = [
             'JOD' => 3,
@@ -242,6 +236,7 @@ abstract class Payfort
             'LYD' => 3,
             'IQD' => 3,
         ];
+
         if (isset($arrCurrencies[$currency])) {
             $decimalPoint = $arrCurrencies[$currency];
         }
