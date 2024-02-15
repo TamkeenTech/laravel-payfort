@@ -17,5 +17,5 @@ return [
     'sandbox_mode' => env('PAYFORT_SANDBOX_MODE', true),
     'SHA_type' => env('PAYFORT_SHA_TYPE', 'sha256'),
     'language' => env('PAYFORT_LANGUAGE', 'en'),
-    'currency' => env('PAYFORT_CURRENCY', 'EGP'),
+    'currency' => env('PAYFORT_CURRENCY', 'SAR'),
 ];
