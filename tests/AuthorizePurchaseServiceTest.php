@@ -50,7 +50,7 @@ class AuthorizePurchaseServiceTest extends TestCase
                 "access_code" => null,
                 "merchant_identifier" => null,
                 "customer_ip" => "127.0.0.1",
-                "currency" => "SAR",
+                "currency" => config('payfort.currency'),
                 "customer_email" => "test@test.com",
                 "token_name" => "token_name",
                 "language" => null,
