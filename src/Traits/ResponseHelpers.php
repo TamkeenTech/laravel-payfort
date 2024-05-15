@@ -6,6 +6,12 @@ use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 
 /**
  * response code
+ *
+ * @method string getResponseFortId()
+ * @method string getResponseReconciliationReference()
+ * @method string getResponseAuthorizationCode()
+ * @method string getResponseMerchantReference()
+ * @method string getResponsePaymentMethod()
  */
 trait ResponseHelpers
 {
@@ -27,9 +33,12 @@ trait ResponseHelpers
         return $this;
     }
 
-    public function getResponseFortId(): string
+    public function __call($name, $args)
     {
-        return $this->fort_params['fort_id'];
+        if (str($name)->startsWith('getResponse')) {
+            $key = str($name)->after('getResponse')->snake()->value();
+            return $this->fort_params[$key] ?? null;
+        }
     }
 
     public function getResponsePaymentMethod(): string

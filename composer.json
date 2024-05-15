@@ -39,6 +39,7 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^7"
+        "orchestra/testbench": "^7",
+        "phpstan/phpstan": "^1.11"
     }
 }

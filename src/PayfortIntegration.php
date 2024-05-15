@@ -111,6 +111,14 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @param array $fort_params
+     * @param float $amount
+     * @param string $email
+     * @param string $redirect_url
+     * @param array $installments_params
+     * @return \TamkeenTech\Payfort\Services\AuthorizePurchaseService
+     */
     public function purchase(
         array $fort_params,
         float $amount,
@@ -132,6 +140,13 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @param array $fort_params
+     * @param float $amount
+     * @param string $email
+     * @param string $redirect_url
+     * @return \TamkeenTech\Payfort\Services\AuthorizePurchaseService
+     */
     public function authorize(
         array $fort_params,
         float $amount,

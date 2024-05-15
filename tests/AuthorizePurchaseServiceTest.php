@@ -18,7 +18,11 @@ class AuthorizePurchaseServiceTest extends TestCase
         Http::fake([
             '*' => Http::response([
                 'response_code' => '06000',
-                'response_message' => '06000'
+                'response_message' => '06000',
+                'reconciliation_reference' => '123412341234',
+                'merchant_reference' => 'test_merchant_reference',
+                'authorization_code' => '123456',
+                'fort_id' => '1234567890'
             ])
         ]);
     }
@@ -185,7 +189,6 @@ class AuthorizePurchaseServiceTest extends TestCase
 
         Payfort::purchase([
             "merchant_reference" => "merchant_reference",
-            "response_message" => "test",
             "token_name" => "token_name",
             "signature" => "signature",
             "response_code" => "1111",
@@ -208,7 +211,6 @@ class AuthorizePurchaseServiceTest extends TestCase
 
         Payfort::purchase([
             "merchant_reference" => "merchant_reference",
-            "response_message" => "test",
             "token_name" => "token_name",
             "signature" => "signature",
             "response_code" => "222e",
@@ -446,5 +448,31 @@ class AuthorizePurchaseServiceTest extends TestCase
                 "signature" => "signature"
             ])) === 0 && $request->url() === 'test_link' && $request->method() === 'POST';
         });
+    }
+
+    /** @test */
+    public function can_access_response_fields()
+    {
+        $this->partialMock(AuthorizePurchaseService::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods();
+
+            $mock->shouldReceive('validateSignature')->andReturnSelf();
+            $mock->shouldReceive('validateResponseCode')->andReturnSelf();
+            $mock->shouldReceive('calculateSignature')->andReturn("signature");
+
+            $mock->shouldReceive('getOperationUrl')->andReturn('test_link');
+        });
+
+        $payfort = Payfort::purchase([
+            "merchant_reference" => "merchant_reference",
+            "response_message" => "test",
+            "token_name" => "token_name",
+            "signature" => "signature"
+        ], 1000, "test@test.com", "redirect_uri");
+
+        $this->assertEquals("1234567890", $payfort->getResponseFortId());
+        $this->assertEquals("test_merchant_reference", $payfort->getResponseMerchantReference());
+        $this->assertEquals("123456", $payfort->getResponseAuthorizationCode());
+        $this->assertEquals("123412341234", $payfort->getResponseReconciliationReference());
     }
 }

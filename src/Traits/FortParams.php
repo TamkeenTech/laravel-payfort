@@ -6,6 +6,7 @@ use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 
 /**
  * fort params
+ * @property array $fort_params
  */
 trait FortParams
 {
