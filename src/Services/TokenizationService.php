@@ -56,6 +56,9 @@ class TokenizationService extends Payfort
         return $this;
     }
 
+    /**
+     * @throws PaymentFailed
+     */
     public function setPaymentMethod(string $method): self
     {
         if (! in_array($method, ['cc_merchantpage', 'cc_merchantpage2', 'installments_merchantpage'])) {
@@ -67,7 +70,7 @@ class TokenizationService extends Payfort
         return $this;
     }
 
-    public function getPaymentForm($gatewayUrl, $postData)
+    public function getPaymentForm($gatewayUrl, $postData): string
     {
         $form = '<form style="display:none" name="payfort_payment_form"'
             .' id="payfort_payment_form" method="post" action="'

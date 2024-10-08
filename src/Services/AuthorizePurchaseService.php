@@ -4,6 +4,7 @@ namespace TamkeenTech\Payfort\Services;
 
 use Illuminate\Support\Facades\Validator;
 use TamkeenTech\Payfort\Events\PayfortMessageLog;
+use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 use TamkeenTech\Payfort\Repositories\Payfort;
 use TamkeenTech\Payfort\Traits\FortParams;
 use TamkeenTech\Payfort\Traits\ResponseHelpers;
@@ -30,6 +31,9 @@ class AuthorizePurchaseService extends Payfort
 
     protected $insallments_params = [];
 
+    /**
+     * @throws PaymentFailed
+     */
     public function handle(): self
     {
         // check form params
@@ -111,7 +115,7 @@ class AuthorizePurchaseService extends Payfort
     {
         if (count($params)) {
             // check installments params
-            /** @var \Illuminate\Validation\Validator */
+            /** @var \Illuminate\Validation\Validator $validator */
             $validator = Validator::make($params, [
                 'issuer_code' => 'required|alpha_num|max:8',
                 'plan_code' => 'required|alpha_num|max:8',

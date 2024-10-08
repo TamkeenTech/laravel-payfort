@@ -2,6 +2,7 @@
 
 namespace TamkeenTech\Payfort\Services;
 
+use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 use TamkeenTech\Payfort\Repositories\Payfort;
 use TamkeenTech\Payfort\Traits\FortParams;
 use TamkeenTech\Payfort\Traits\ResponseHelpers;
@@ -10,6 +11,9 @@ class CaptureService extends Payfort
 {
     use ResponseHelpers, FortParams;
 
+    /**
+     * @throws PaymentFailed
+     */
     public function handle(): self
     {
         $request = [

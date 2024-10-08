@@ -4,6 +4,7 @@ namespace TamkeenTech\Payfort\Services;
 
 use Illuminate\Support\Facades\Validator;
 use TamkeenTech\Payfort\Events\PayfortMessageLog;
+use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 use TamkeenTech\Payfort\Repositories\Payfort;
 use TamkeenTech\Payfort\Traits\FortParams;
 use TamkeenTech\Payfort\Traits\ResponseHelpers;
@@ -17,6 +18,9 @@ class ApplePayService extends Payfort
 
     protected $command = 'PURCHASE';
 
+    /**
+     * @throws PaymentFailed
+     */
     public function handle(): self
     {
         $request = $this->prepareRequest();

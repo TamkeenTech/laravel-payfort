@@ -7,6 +7,9 @@ use TamkeenTech\Payfort\Repositories\Payfort;
 
 class CheckStatusService extends Payfort
 {
+    /**
+     * @throws RequestFailed
+     */
     public function handle()
     {
         $request = [

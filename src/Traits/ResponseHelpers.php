@@ -15,6 +15,9 @@ use TamkeenTech\Payfort\Exceptions\PaymentFailed;
  */
 trait ResponseHelpers
 {
+    /**
+     * @throws PaymentFailed
+     */
     protected function validateResponseCode(): self
     {
         if (substr($this->fort_params['response_code'], 2) != '000') {
