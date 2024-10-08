@@ -8,7 +8,7 @@ return [
     'merchants' => [
         'default' => [
             'merchant_identifier' => env('PAYFORT_MERCHANT_IDENTIFIER', null),
-            'access_code' => env('PAYFORT_ACESS_CODE', null),
+            'access_code' => env('PAYFORT_ACCESS_CODE', null),
             'SHA_request_phrase' => env('PAYFORT_SHAR_REQUEST_PHARSE', null),
             'SHA_response_phrase' => env('PAYFORT_SHAR_RESPONSE_PHRASE', null),
         ],
