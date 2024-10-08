@@ -7,6 +7,7 @@ use TamkeenTech\Payfort\Exceptions\PaymentFailed;
 /**
  * response code
  *
+ * @method array getResponse()
  * @method string getResponseFortId()
  * @method string getResponseReconciliationReference()
  * @method string getResponseAuthorizationCode()
@@ -15,6 +16,9 @@ use TamkeenTech\Payfort\Exceptions\PaymentFailed;
  */
 trait ResponseHelpers
 {
+    /**
+     * @throws PaymentFailed
+     */
     protected function validateResponseCode(): self
     {
         if (substr($this->fort_params['response_code'], 2) != '000') {
@@ -35,6 +39,10 @@ trait ResponseHelpers
 
     public function __call($name, $args)
     {
+        if ($name === 'getResponse') {
+            return $this->fort_params;
+        }
+
         if (str($name)->startsWith('getResponse')) {
             $key = str($name)->after('getResponse')->snake()->value();
             return $this->fort_params[$key] ?? null;

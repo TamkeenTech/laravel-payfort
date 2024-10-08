@@ -7,6 +7,9 @@ use TamkeenTech\Payfort\Repositories\Payfort;
 
 class RefundService extends Payfort
 {
+    /**
+     * @throws PaymentFailed
+     */
     public function handle(): self
     {
         $this->isTestingFortId($this->fort_id);

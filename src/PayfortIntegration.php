@@ -2,6 +2,8 @@
 
 namespace TamkeenTech\Payfort;
 
+use TamkeenTech\Payfort\Exceptions\PaymentFailed;
+use TamkeenTech\Payfort\Exceptions\RequestFailed;
 use TamkeenTech\Payfort\Services\ApplePayService;
 use TamkeenTech\Payfort\Services\AuthorizePurchaseService;
 use TamkeenTech\Payfort\Services\CaptureService;
@@ -83,7 +85,9 @@ class PayfortIntegration
     }
 
 
-
+    /**
+     * @throws PaymentFailed
+     */
     public function refund($fort_id, $amount)
     {
         return app(RefundService::class)
@@ -94,6 +98,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws PaymentFailed
+     */
     public function void($fort_id)
     {
         return app(VoidService::class)
@@ -103,6 +110,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws RequestFailed
+     */
     public function checkStatus($fort_id)
     {
         return app(CheckStatusService::class)
@@ -118,6 +128,7 @@ class PayfortIntegration
      * @param string $redirect_url
      * @param array $installments_params
      * @return \TamkeenTech\Payfort\Services\AuthorizePurchaseService
+     * @throws PaymentFailed
      */
     public function purchase(
         array $fort_params,
@@ -146,6 +157,7 @@ class PayfortIntegration
      * @param string $email
      * @param string $redirect_url
      * @return \TamkeenTech\Payfort\Services\AuthorizePurchaseService
+     * @throws PaymentFailed
      */
     public function authorize(
         array $fort_params,
@@ -170,9 +182,9 @@ class PayfortIntegration
      * prepare tokenization params and return array
      * by default it will return a form params.
      *
-     * @param  float  $amount
-     * @param  string  $email
-     * @param  boolean  $form
+     * @param float $amount
+     * @param string $redirect_url
+     * @param bool $form_flag
      * @return array
      */
     public function tokenization(
@@ -189,6 +201,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws PaymentFailed
+     */
     public function processResponse(array $fort_params)
     {
         return app(ProcessResponseService::class)
@@ -198,6 +213,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws RequestFailed
+     */
     public function getInstallmentsPlans()
     {
         return app(GetInstallmentsPlansService::class)
@@ -205,6 +223,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws PaymentFailed
+     */
     public function capture(string $fort_id, $amount)
     {
         return app(CaptureService::class)
@@ -215,6 +236,9 @@ class PayfortIntegration
             ->handle();
     }
 
+    /**
+     * @throws PaymentFailed
+     */
     public function applePay(array $params, float $amount, string $email, string $command = 'PURCHASE')
     {
         return app(ApplePayService::class)

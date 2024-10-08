@@ -7,6 +7,9 @@ use TamkeenTech\Payfort\Repositories\Payfort;
 
 class GetInstallmentsPlansService extends Payfort
 {
+    /**
+     * @throws RequestFailed
+     */
     public function handle()
     {
         $request = [

@@ -7,6 +7,9 @@ use TamkeenTech\Payfort\Repositories\Payfort;
 
 class VoidService extends Payfort
 {
+    /**
+     * @throws PaymentFailed
+     */
     public function handle(): self
     {
         $request = [
